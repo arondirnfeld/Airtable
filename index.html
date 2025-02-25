@@ -11,6 +11,8 @@
       background-color: #f9f9f9;
       margin: 0;
       padding: 20px;
+      min-height: 100vh;
+      position: relative;
     }
     .container {
       max-width: 800px;
@@ -19,6 +21,9 @@
       padding: 30px;
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
       border-radius: 8px;
+      min-height: calc(100vh - 40px); /* 40px accounts for body padding */
+      display: flex;
+      flex-direction: column
     }
     .header {
       display: flex;
@@ -26,6 +31,14 @@
       border-bottom: 2px solid #6c5ce7;
       padding-bottom: 20px;
       margin-bottom: 30px;
+    }
+    .footer {
+      margin-top: auto; /* This pushes the footer to the bottom */
+      padding-top: 20px;
+      padding-bottom: 20px;
+      text-align: center;
+      color: #666;
+      border-top: 1px solid #ddd;
     }
     .header-left h1 {
       color: #6c5ce7;
@@ -256,6 +269,7 @@
     @media print {
       .instructions, .print-controls, .item-controls, .action-cell, .remove-row {
         display: none;
+        
       }
       body {
         background-color: white;
@@ -264,6 +278,19 @@
       .container {
         box-shadow: none;
         padding: 0;
+        min-height: auto; /* Reset min-height for printing */
+      }
+      .footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 20px;
+        background-color: white;
+      }
+      /* Add padding to prevent content from overlapping with footer */
+      .signature-section {
+        margin-bottom: 100px; /* Adjust this value based on your footer height */
       }
       @page {
         size: landscape;

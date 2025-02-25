@@ -73,6 +73,9 @@
       width: 100%;
       border-collapse: collapse;
       margin-bottom: 30px;
+      max-width: 100%;
+      overflow-x: auto;
+      display: block;
     }
     .items-table th {
       background-color: #6c5ce7;
@@ -296,7 +299,63 @@
         size: landscape;
         margin: 0.5cm;
       }
-    }</style>
+    }
+    .items-table th, .items-table td {
+      white-space: nowrap;
+      min-width: 80px;
+    }
+
+    .items-table td:nth-child(4) { /* Item Description column */
+      white-space: normal;
+      min-width: 200px;
+    }
+
+    .items-table td:nth-child(1) { /* Image column */
+      width: 80px;
+      min-width: 80px;
+    }
+
+    .items-table td:nth-child(2) { /* Type column */
+      width: 100px;
+      min-width: 100px;
+    }
+
+    .items-table td:nth-child(3) { /* Item # column */
+      width: 80px;
+      min-width: 80px;
+    }
+
+    .items-table td:nth-child(4) { /* Item Description column */
+      width: 200px;
+      min-width: 200px;
+      white-space: normal; /* Allow text wrapping */
+    }
+
+    .items-table td:nth-child(5) { /* Date column */
+      width: 100px;
+      min-width: 100px;
+    }
+
+    .items-table td:nth-child(6) { /* Quantity column */
+      width: 80px;
+      min-width: 80px;
+    }
+
+    .items-table td:nth-child(7) { /* Unit Price column */
+      width: 100px;
+      min-width: 100px;
+    }
+
+    .items-table td:nth-child(8) { /* Total column */
+      width: 100px;
+      min-width: 100px;
+    }
+
+    .items-table td:nth-child(9) { /* Action column */
+      width: 60px;
+      min-width: 60px;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -356,7 +415,10 @@
       <thead>
         <tr>
           <th>Image</th>
+          <th>Type</th>
+          <th>Item #</th>
           <th>Item Description</th>
+          <th>Date</th>
           <th>Quantity</th>
           <th>Unit Price</th>
           <th>Total</th>
@@ -372,7 +434,10 @@
               <img src="/api/placeholder/80/80" alt="Product">
             </div>
           </td>
+          <td><div class="editable" contenteditable="true">Hardware</div></td>
+          <td><div class="editable" contenteditable="true">ITM-001</div></td>
           <td><div class="editable" contenteditable="true" onblur="updateRowTotal(this)">Premium Office Chair</div></td>
+          <td><div class="editable" contenteditable="true">2025-02-25</div></td>
           <td><div class="editable quantity-field" contenteditable="true" onblur="updateRowTotal(this)">2</div></td>
           <td><div class="editable price-field" contenteditable="true" onblur="updateRowTotal(this)">$249.99</div></td>
           <td><div class="editable total-field" contenteditable="true">$499.98</div></td>
@@ -386,10 +451,13 @@
               <img src="/api/placeholder/80/80" alt="Product">
             </div>
           </td>
-          <td><div class="editable" contenteditable="true" onblur="updateRowTotal(this)">Ergonomic Desk</div></td>
-          <td><div class="editable quantity-field" contenteditable="true" onblur="updateRowTotal(this)">1</div></td>
-          <td><div class="editable price-field" contenteditable="true" onblur="updateRowTotal(this)">$399.00</div></td>
-          <td><div class="editable total-field" contenteditable="true">$399.00</div></td>
+          <td><div class="editable" contenteditable="true">Hardware</div></td>
+          <td><div class="editable" contenteditable="true">ITM-001</div></td>
+          <td><div class="editable" contenteditable="true" onblur="updateRowTotal(this)">Premium Office Chair</div></td>
+          <td><div class="editable" contenteditable="true">2025-02-25</div></td>
+          <td><div class="editable quantity-field" contenteditable="true" onblur="updateRowTotal(this)">2</div></td>
+          <td><div class="editable price-field" contenteditable="true" onblur="updateRowTotal(this)">$249.99</div></td>
+          <td><div class="editable total-field" contenteditable="true">$499.98</div></td>
           <td class="action-cell"><button class="remove-row" onclick="removeRow(this)">×</button></td>
         </tr>
         <tr>
@@ -400,10 +468,13 @@
               <img src="/api/placeholder/80/80" alt="Product">
             </div>
           </td>
-          <td><div class="editable" contenteditable="true" onblur="updateRowTotal(this)">Wireless Keyboard and Mouse Combo</div></td>
-          <td><div class="editable quantity-field" contenteditable="true" onblur="updateRowTotal(this)">3</div></td>
-          <td><div class="editable price-field" contenteditable="true" onblur="updateRowTotal(this)">$79.95</div></td>
-          <td><div class="editable total-field" contenteditable="true">$239.85</div></td>
+          <td><div class="editable" contenteditable="true">Hardware</div></td>
+          <td><div class="editable" contenteditable="true">ITM-001</div></td>
+          <td><div class="editable" contenteditable="true" onblur="updateRowTotal(this)">Premium Office Chair</div></td>
+          <td><div class="editable" contenteditable="true">2025-02-25</div></td>
+          <td><div class="editable quantity-field" contenteditable="true" onblur="updateRowTotal(this)">2</div></td>
+          <td><div class="editable price-field" contenteditable="true" onblur="updateRowTotal(this)">$249.99</div></td>
+          <td><div class="editable total-field" contenteditable="true">$499.98</div></td>
           <td class="action-cell"><button class="remove-row" onclick="removeRow(this)">×</button></td>
         </tr>
       </tbody>
@@ -493,7 +564,10 @@
             <img src="/api/placeholder/80/80" alt="Product">
           </div>
         </td>
+        <td><div class="editable" contenteditable="true">Type</div></td>
+        <td><div class="editable" contenteditable="true">ITM-</div></td>
         <td><div class="editable" contenteditable="true" onblur="updateRowTotal(this)">New Item</div></td>
+        <td><div class="editable" contenteditable="true">${new Date().toISOString().split('T')[0]}</div></td>
         <td><div class="editable quantity-field" contenteditable="true" onblur="updateRowTotal(this)">1</div></td>
         <td><div class="editable price-field" contenteditable="true" onblur="updateRowTotal(this)">$0.00</div></td>
         <td><div class="editable total-field" contenteditable="true">$0.00</div></td>

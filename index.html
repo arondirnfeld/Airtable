@@ -3,636 +3,197 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Editable Purchase Order Template - Landscape Print</title>
+  <title>Purchase Order</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
   <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    body { 
+      font-family: 'Arial', sans-serif; 
+      padding: 30px; 
+      background-color: #f4f4f4; 
+      margin: 0; 
       color: #333;
-      background-color: #f9f9f9;
-      margin: 0;
-      padding: 20px;
-      min-height: 100vh;
-      position: relative;
     }
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      background: white;
-      padding: 30px;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-      border-radius: 8px;
-      min-height: calc(100vh - 40px); /* 40px accounts for body padding */
-      display: flex;
-      flex-direction: column
+
+    h1 { 
+      text-align: center; 
+      font-size: 36px; 
+      color: #2a4d6c; 
+      margin-bottom: 20px; 
     }
-    .header {
-      display: flex;
-      justify-content: space-between;
-      border-bottom: 2px solid #6c5ce7;
-      padding-bottom: 20px;
-      margin-bottom: 30px;
+
+    .content { 
+      background-color: #fff; 
+      border-radius: 8px; 
+      padding: 20px; 
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+      margin-bottom: 30px; 
     }
-    .footer {
-      margin-top: auto; /* This pushes the footer to the bottom */
-      padding-top: 20px;
-      padding-bottom: 20px;
-      text-align: center;
-      color: #666;
-      border-top: 1px solid #ddd;
+
+    .footer { 
+      text-align: center; 
+      font-size: 18px; 
+      margin-top: 30px; 
+      font-weight: bold; 
     }
-    .header-left h1 {
-      color: #6c5ce7;
-      margin: 0;
-      font-size: 28px;
-    }
-    .header-right {
-      text-align: right;
-    }
-    .po-number {
-      font-size: 18px;
-      font-weight: bold;
-      color: #6c5ce7;
-    }
-    .address-section {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 30px;
-    }
-    .address-box {
-      width: 45%;
-      padding: 15px;
-      background-color: #f7f7ff;
-      border-radius: 6px;
-      border-left: 4px solid #6c5ce7;
-    }
-    .address-box h3 {
-      margin-top: 0;
-      color: #6c5ce7;
-    }
-    .items-table {
+
+    table { 
       width: 100%;
       border-collapse: collapse;
+      background-color: #fff; 
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+      border-radius: 8px; 
       margin-bottom: 30px;
-      max-width: 100%;
-      overflow-x: auto;
+    }
+
+    th, td { 
+      border: 1px solid #ddd; 
+      padding: 15px; 
+      text-align: left; 
+      vertical-align: middle;
+      word-wrap: break-word;
+    }
+
+    th { 
+      background-color: #2a4d6c; 
+      color: #fff; 
+      font-size: 16px; 
+    }
+
+    td { 
+      font-size: 14px; 
+    }
+
+    tr:nth-child(even) { 
+      background-color: #f9f9f9; 
+    }
+
+    tr:hover { 
+      background-color: #f1f1f1; 
+    }
+
+    img { 
+      max-width: 50px;
+      height: auto; 
+      border-radius: 4px; 
       display: block;
+      margin-left: auto;
+      margin-right: auto;
     }
-    .items-table th {
-      background-color: #6c5ce7;
-      color: white;
-      padding: 12px;
-      text-align: left;
+
+    .content p {
+      font-size: 18px; 
+      margin: 10px 0;
     }
-    .items-table td {
-      padding: 12px;
-      border-bottom: 1px solid #ddd;
+
+    .content strong {
+      color: #2a4d6c;
     }
-    .items-table tr:last-child td {
-      border-bottom: none;
+
+    /* Prevent row breaks */
+    thead { 
+      display: table-header-group; 
     }
-    .item-image {
-      width: 80px;
-      height: 80px;
-      background-color: #f0f0f0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 4px;
-      overflow: hidden;
-      position: relative;
+
+    tfoot { 
+      display: table-footer-group; 
     }
-    .item-image img {
-      max-width: 100%;
-      max-height: 100%;
+
+    tr {
+      page-break-inside: avoid !important; /* Ensures rows don’t split */
     }
-    .total-section {
-      display: flex;
-      justify-content: flex-end;
-      margin-top: 20px;
-    }
-    .total-box {
-      width: 300px;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      padding: 15px;
-    }
-    .total-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 5px 0;
-    }
-    .total-row.final {
-      border-top: 2px solid #ddd;
-      margin-top: 10px;
-      padding-top: 10px;
-      font-weight: bold;
-      color: #6c5ce7;
-    }
-    .footer {
-      margin-top: 40px;
-      border-top: 1px solid #ddd;
-      padding-top: 20px;
-      text-align: center;
-      color: #666;
-    }
-    .signature-section {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 40px;
-    }
-    .signature-box {
-      width: 45%;
-      border-top: 1px solid #ddd;
-      padding-top: 10px;
-      text-align: center;
-    }
-    
-    /* Editable field styles */
-    .editable {
-      border: 1px solid transparent;
-      padding: 3px;
-      cursor: text;
-      background-color: rgba(108, 92, 231, 0.05);
-      transition: all 0.2s ease;
-      min-height: 1em;
-    }
-    .editable:hover {
-      border-color: #ccc;
-      background-color: rgba(108, 92, 231, 0.1);
-    }
-    .editable:focus {
-      outline: none;
-      border-color: #6c5ce7;
-      background-color: white;
-      box-shadow: 0 0 3px rgba(108, 92, 231, 0.3);
-    }
-    textarea.editable {
-      width: 95%;
-      min-height: 60px;
-      resize: vertical;
-    }
-    .file-input {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      opacity: 0;
-      cursor: pointer;
-      z-index: 2;
-    }
-    .upload-text {
-      position: absolute;
-      z-index: 1;
-      font-size: 12px;
-      text-align: center;
-      color: #666;
-    }
-    .print-controls {
-      margin-bottom: 20px;
-    }
-    .print-button {
-      background-color: #6c5ce7;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: bold;
-      margin-right: 10px;
-      transition: background-color 0.2s;
-    }
-    .print-button:hover {
-      background-color: #5a4bcf;
-    }
-    .orientation-note {
-      display: inline-block;
-      background-color: #f7f7ff;
-      padding: 8px 15px;
-      border-radius: 4px;
-      color: #6c5ce7;
-      font-weight: bold;
-    }
-    .instructions {
-      background-color: #f7f7ff;
-      padding: 15px;
-      border-radius: 6px;
-      margin-bottom: 20px;
-      border-left: 4px solid #6c5ce7;
-    }
-    
-    /* Item addition and removal styles */
-    .item-controls {
-      margin: 20px 0;
-      display: flex;
-      gap: 10px;
-    }
-    .add-item-button, .remove-item-button {
-      background-color: #6c5ce7;
-      color: white;
-      border: none;
-      padding: 8px 15px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: background-color 0.2s;
-      display: flex;
-      align-items: center;
-    }
-    .add-item-button:hover, .remove-item-button:hover {
-      background-color: #5a4bcf;
-    }
-    .remove-item-button {
-      background-color: #e74c3c;
-    }
-    .remove-item-button:hover {
-      background-color: #c0392b;
-    }
-    .button-icon {
-      margin-right: 5px;
-      font-weight: bold;
-      font-size: 16px;
-    }
-    .action-cell {
-      text-align: center;
-    }
-    .remove-row {
-      background-color: #e74c3c;
-      color: white;
-      border: none;
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      cursor: pointer;
-      font-weight: bold;
-      transition: background-color 0.2s;
-    }
-    .remove-row:hover {
-      background-color: #c0392b;
-    }
-    
+
     @media print {
-      .instructions, .print-controls, .item-controls, .action-cell, .remove-row {
-        display: none;
-        
-      }
       body {
-        background-color: white;
         padding: 0;
+        margin: 0;
       }
-      .container {
-        box-shadow: none;
-        padding: 0;
-        min-height: auto; /* Reset min-height for printing */
+
+      table {
+        width: 100%;
       }
-      .footer {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        padding: 20px;
-        background-color: white;
+
+      thead {
+        display: table-header-group !important;
       }
-      /* Add padding to prevent content from overlapping with footer */
-      .signature-section {
-        margin-bottom: 100px; /* Adjust this value based on your footer height */
+
+      tfoot {
+        display: table-footer-group !important;
       }
+
+      tr {
+        page-break-inside: avoid !important;
+      }
+
       @page {
-        size: landscape;
-        margin: 0.5cm;
+        size: A4 portrait;
+        margin: 10mm;
       }
-    }
-    .items-table th, .items-table td {
-      white-space: nowrap;
-      min-width: 80px;
-    }
 
-    .items-table td:nth-child(4) { /* Item Description column */
-      white-space: normal;
-      min-width: 200px;
-    }
-
-    .items-table td:nth-child(1) { /* Image column */
-      width: 80px;
-      min-width: 80px;
-    }
-
-    .items-table td:nth-child(2) { /* Type column */
-      width: 100px;
-      min-width: 100px;
-    }
-
-    .items-table td:nth-child(3) { /* Item # column */
-      width: 80px;
-      min-width: 80px;
-    }
-
-    .items-table td:nth-child(4) { /* Item Description column */
-      width: 200px;
-      min-width: 200px;
-      white-space: normal; /* Allow text wrapping */
-    }
-
-    .items-table td:nth-child(5) { /* Date column */
-      width: 100px;
-      min-width: 100px;
-    }
-
-    .items-table td:nth-child(6) { /* Quantity column */
-      width: 80px;
-      min-width: 80px;
-    }
-
-    .items-table td:nth-child(7) { /* Unit Price column */
-      width: 100px;
-      min-width: 100px;
-    }
-
-    .items-table td:nth-child(8) { /* Total column */
-      width: 100px;
-      min-width: 100px;
-    }
-
-    .items-table td:nth-child(9) { /* Action column */
-      width: 60px;
-      min-width: 60px;
+      h1 {
+        font-size: 28px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="instructions">
-      <h3>Instructions:</h3>
-      <p>1. Click on any text to edit it</p>
-      <p>2. Click on image areas to upload product images</p>
-      <p>3. Use the "Add Item" button to add more items to your order</p>
-      <p>4. Use the "×" button to remove unwanted items</p>
-      <p>5. Click "Calculate Totals" to update all pricing</p>
-      <p>6. When finished, click the Print/Save as PDF button</p>
-      <p>7. In the print dialog, the orientation will automatically be set to landscape</p>
-    </div>
-    
-    <div class="print-controls">
-      <button class="print-button" onclick="window.print()">Print / Save as PDF</button>
-      <span class="orientation-note">✓ Will print in landscape format</span>
-    </div>
-    
-    <div class="header">
-      <div class="header-left">
-        <h1>PURCHASE ORDER</h1>
-        <div class="editable" contenteditable="true">Your Company Name</div>
-      </div>
-      <div class="header-right">
-        <div class="po-number">PO #: <span class="editable" contenteditable="true">PO-2025-0225</span></div>
-        <p>Date: <span class="editable" contenteditable="true">February 25, 2025</span></p>
-      </div>
-    </div>
 
-    <div class="address-section">
-      <div class="address-box">
-        <h3>VENDOR</h3>
-        <div class="editable" contenteditable="true">
-          Vendor Company Name
-          Attn: Contact Person
-          123 Vendor Street
-          Vendor City, VS 12345
-          Phone: (123) 456-7890
-          Email: vendor@example.com
-        </div>
-      </div>
-      <div class="address-box">
-        <h3>SHIP TO</h3>
-        <div class="editable" contenteditable="true">
-          Your Company Name
-          Attn: Receiving Department
-          456 Your Address
-          Your City, YC 67890
-          Phone: (098) 765-4321
-          Email: receiving@yourcompany.com
-        </div>
-      </div>
-    </div>
+  <h1>Purchase Order</h1>
 
-    <table class="items-table" id="itemsTable">
-      <thead>
-        <tr>
-          <th>Image</th>
-          <th>Type</th>
-          <th>Item #</th>
-          <th>Item Description</th>
-          <th>Date</th>
-          <th>Quantity</th>
-          <th>Unit Price</th>
-          <th>Total</th>
-          <th class="action-cell">Action</th>
-        </tr>
-      </thead>
-      <tbody id="itemsTableBody">
-        <tr>
-          <td>
-            <div class="item-image">
-              <input type="file" class="file-input" onchange="previewImage(this)">
-              <div class="upload-text">Click to upload</div>
-              <img src="/api/placeholder/80/80" alt="Product">
-            </div>
-          </td>
-          <td><div class="editable" contenteditable="true">Hardware</div></td>
-          <td><div class="editable" contenteditable="true">ITM-001</div></td>
-          <td><div class="editable" contenteditable="true" onblur="updateRowTotal(this)">Premium Office Chair</div></td>
-          <td><div class="editable" contenteditable="true">2025-02-25</div></td>
-          <td><div class="editable quantity-field" contenteditable="true" onblur="updateRowTotal(this)">2</div></td>
-          <td><div class="editable price-field" contenteditable="true" onblur="updateRowTotal(this)">$249.99</div></td>
-          <td><div class="editable total-field" contenteditable="true">$499.98</div></td>
-          <td class="action-cell"><button class="remove-row" onclick="removeRow(this)">×</button></td>
-        </tr>
-        <tr>
-          <td>
-            <div class="item-image">
-              <input type="file" class="file-input" onchange="previewImage(this)">
-              <div class="upload-text">Click to upload</div>
-              <img src="/api/placeholder/80/80" alt="Product">
-            </div>
-          </td>
-          <td><div class="editable" contenteditable="true">Hardware</div></td>
-          <td><div class="editable" contenteditable="true">ITM-001</div></td>
-          <td><div class="editable" contenteditable="true" onblur="updateRowTotal(this)">Premium Office Chair</div></td>
-          <td><div class="editable" contenteditable="true">2025-02-25</div></td>
-          <td><div class="editable quantity-field" contenteditable="true" onblur="updateRowTotal(this)">2</div></td>
-          <td><div class="editable price-field" contenteditable="true" onblur="updateRowTotal(this)">$249.99</div></td>
-          <td><div class="editable total-field" contenteditable="true">$499.98</div></td>
-          <td class="action-cell"><button class="remove-row" onclick="removeRow(this)">×</button></td>
-        </tr>
-        <tr>
-          <td>
-            <div class="item-image">
-              <input type="file" class="file-input" onchange="previewImage(this)">
-              <div class="upload-text">Click to upload</div>
-              <img src="/api/placeholder/80/80" alt="Product">
-            </div>
-          </td>
-          <td><div class="editable" contenteditable="true">Hardware</div></td>
-          <td><div class="editable" contenteditable="true">ITM-001</div></td>
-          <td><div class="editable" contenteditable="true" onblur="updateRowTotal(this)">Premium Office Chair</div></td>
-          <td><div class="editable" contenteditable="true">2025-02-25</div></td>
-          <td><div class="editable quantity-field" contenteditable="true" onblur="updateRowTotal(this)">2</div></td>
-          <td><div class="editable price-field" contenteditable="true" onblur="updateRowTotal(this)">$249.99</div></td>
-          <td><div class="editable total-field" contenteditable="true">$499.98</div></td>
-          <td class="action-cell"><button class="remove-row" onclick="removeRow(this)">×</button></td>
-        </tr>
-      </tbody>
-    </table>
-
-    <div class="item-controls">
-      <button class="add-item-button" onclick="addNewRow()"><span class="button-icon">+</span> Add Item</button>
-      <button class="print-button" onclick="calculateTotals()">Calculate Totals</button>
-    </div>
-
-    <div class="bottom-bart">
-
-   
-    <div class="total-section">
-      <div class="total-box">
-        <div class="total-row">
-          <div>Subtotal:</div>
-          <div class="editable" id="subtotal" contenteditable="true">$1,138.83</div>
-        </div>
-        <div class="total-row">
-          <div>Tax (<span class="editable" id="taxRate" contenteditable="true" onblur="calculateTotals()">8</span>%):</div>
-          <div class="editable" id="taxAmount" contenteditable="true">$91.11</div>
-        </div>
-        <div class="total-row">
-          <div>Shipping:</div>
-          <div class="editable" id="shipping" contenteditable="true" onblur="calculateTotals()">$45.00</div>
-        </div>
-        <div class="total-row final">
-          <div>TOTAL:</div>
-          <div class="editable" id="grandTotal" contenteditable="true">$1,274.94</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="terms">
-      <h3>Terms & Conditions</h3>
-      <textarea class="editable">1. Please send two copies of your invoice.
-2. Enter this order in accordance with the prices, terms, delivery method, and specifications listed above.
-3. Please notify us immediately if you are unable to ship as specified.
-4. Send all correspondence to the address above.</textarea>
-    </div>
-
-    <div class="signature-section">
-      <div class="signature-box">
-        <p>Authorized by</p>
-        <p>_________________________</p>
-        <p><span class="editable" contenteditable="true">Name, Title</span></p>
-      </div>
-      <div class="signature-box">
-        <p>Accepted by</p>
-        <p>_________________________</p>
-        <p><span class="editable" contenteditable="true">Vendor Signature</span></p>
-      </div>
-    </div>
+  <div class="content">
+    <p><strong>Vendor:</strong> {Vendor Name}</p>
+    <p><strong>PO Number:</strong> {PO Number}</p>
+    <p><strong>Date:</strong> {Date}</p>
   </div>
-    <div class="footer">
-      <p>Thank you for your business!</p>
-      <p><span class="editable" contenteditable="true">Your Company Name • 456 Your Address, Your City, YC 67890 • (098) 765-4321 • www.yourcompany.com</span></p>
-    </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Image</th>
+        <th>Quantity</th>
+        <th>Price</th>
+        <th>Barcode</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody id="poTableBody"></tbody>
+    <tfoot>
+      <tr>
+        <td colspan="5" style="text-align: right;"><strong>Total:</strong></td>
+        <td>${Total Amount}</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <div class="footer">
+    <p><strong>Total Amount:</strong> ${Total Amount}</p>
   </div>
 
   <script>
-    function previewImage(input) {
-      if (input.files && input.files[0]) {
-        var reader = new FileReader();
-        
-        reader.onload = function(e) {
-          var img = input.parentElement.querySelector('img');
-          img.src = e.target.result;
-          var uploadText = input.parentElement.querySelector('.upload-text');
-          uploadText.style.display = 'none';
-        }
-        
-        reader.readAsDataURL(input.files[0]);
+    document.addEventListener("DOMContentLoaded", function() {
+      var tableBody = document.getElementById("poTableBody");
+
+      var items = "{Joined Item Names}".split("|");
+      var images = "{Joined Item Images}".split("|");
+      var quantities = "{Joined Quantities}".split("|");
+      var prices = "{Joined Prices}".split("|");
+      var barcodes = "{Joined Barcodes}".split("|");
+      var totals = "{Joined Totals}".split("|");
+
+      for (var i = 0; i < items.length; i++) {
+        var row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${items[i]}</td>
+          <td><img src="${images[i]}" alt="Item Image"></td>
+          <td>${quantities[i]}</td>
+          <td>${prices[i]}</td>
+          <td><img src="${barcodes[i]}" alt="Barcode"></td>
+          <td>${totals[i]}</td>
+        `;
+        tableBody.appendChild(row);
       }
-    }
-    
-    function addNewRow() {
-      const tableBody = document.getElementById('itemsTableBody');
-      const newRow = document.createElement('tr');
-      
-      newRow.innerHTML = `
-        <td>
-          <div class="item-image">
-            <input type="file" class="file-input" onchange="previewImage(this)">
-            <div class="upload-text">Click to upload</div>
-            <img src="/api/placeholder/80/80" alt="Product">
-          </div>
-        </td>
-        <td><div class="editable" contenteditable="true">Type</div></td>
-        <td><div class="editable" contenteditable="true">ITM-</div></td>
-        <td><div class="editable" contenteditable="true" onblur="updateRowTotal(this)">New Item</div></td>
-        <td><div class="editable" contenteditable="true">${new Date().toISOString().split('T')[0]}</div></td>
-        <td><div class="editable quantity-field" contenteditable="true" onblur="updateRowTotal(this)">1</div></td>
-        <td><div class="editable price-field" contenteditable="true" onblur="updateRowTotal(this)">$0.00</div></td>
-        <td><div class="editable total-field" contenteditable="true">$0.00</div></td>
-        <td class="action-cell"><button class="remove-row" onclick="removeRow(this)">×</button></td>
-      `;
-      
-      tableBody.appendChild(newRow);
-      updateRowTotal(newRow.querySelector('.quantity-field'));
-    }
-    
-    function removeRow(button) {
-      const row = button.closest('tr');
-      row.remove();
-      calculateTotals();
-    }
-    
-    function updateRowTotal(element) {
-      const row = element.closest('tr');
-      const quantityElement = row.querySelector('.quantity-field');
-      const priceElement = row.querySelector('.price-field');
-      const totalElement = row.querySelector('.total-field');
-      
-      if (!quantityElement || !priceElement || !totalElement) return;
-      
-      const quantity = parseFloat(quantityElement.textContent.replace(/[^\d.]/g, '')) || 0;
-      const price = parseFloat(priceElement.textContent.replace(/[^\d.]/g, '')) || 0;
-      const total = quantity * price;
-      
-      totalElement.textContent = formatCurrency(total);
-      calculateTotals();
-    }
-    
-    function calculateTotals() {
-      const rows = document.querySelectorAll('#itemsTableBody tr');
-      let subtotal = 0;
-      
-      rows.forEach(row => {
-        const totalElement = row.querySelector('.total-field');
-        if (totalElement) {
-          const total = parseFloat(totalElement.textContent.replace(/[^\d.]/g, '')) || 0;
-          subtotal += total;
-        }
-      });
-      
-      const subtotalElement = document.getElementById('subtotal');
-      const taxRateElement = document.getElementById('taxRate');
-      const taxAmountElement = document.getElementById('taxAmount');
-      const shippingElement = document.getElementById('shipping');
-      const grandTotalElement = document.getElementById('grandTotal');
-      
-      subtotalElement.textContent = formatCurrency(subtotal);
-      
-      const taxRate = parseFloat(taxRateElement.textContent) || 0;
-      const taxAmount = subtotal * (taxRate / 100);
-      taxAmountElement.textContent = formatCurrency(taxAmount);
-      
-      const shipping = parseFloat(shippingElement.textContent.replace(/[^\d.]/g, '')) || 0;
-      const grandTotal = subtotal + taxAmount + shipping;
-      
-      grandTotalElement.textContent = formatCurrency(grandTotal);
-    }
-    
-    function formatCurrency(amount) {
-      return '$' + amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-    }
+    });
   </script>
+
 </body>
 </html>

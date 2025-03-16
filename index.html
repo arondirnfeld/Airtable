@@ -3,195 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Purchase Order</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
-  <style>
-    body { 
-      font-family: 'Arial', sans-serif; 
-      padding: 30px; 
-      background-color: #f4f4f4; 
-      margin: 0; 
-      color: #333;
-    }
-
-    h1 { 
-      text-align: center; 
-      font-size: 36px; 
-      color: #2a4d6c; 
-      margin-bottom: 20px; 
-    }
-
-    .content { 
-      background-color: #fff; 
-      border-radius: 8px; 
-      padding: 20px; 
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
-      margin-bottom: 30px; 
-    }
-
-    .footer { 
-      text-align: center; 
-      font-size: 18px; 
-      margin-top: 30px; 
-      font-weight: bold; 
-    }
-
-    table { 
-      width: 100%;
-      border-collapse: collapse;
-      background-color: #fff; 
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
-      border-radius: 8px; 
-      margin-bottom: 30px;
-    }
-
-    th, td { 
-      border: 1px solid #ddd; 
-      padding: 15px; 
-      text-align: left; 
-      vertical-align: middle;
-      word-wrap: break-word;
-    }
-
-    th { 
-      background-color: #2a4d6c; 
-      color: #fff; 
-      font-size: 16px; 
-    }
-
-    td { 
-      font-size: 14px; 
-    }
-
-    tr:nth-child(even) { 
-      background-color: #f9f9f9; 
-    }
-
-    tr:hover { 
-      background-color: #f1f1f1; 
-    }
-
-    img { 
-      max-width: 50px;
-      height: auto; 
-      border-radius: 4px; 
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .content p {
-      font-size: 18px; 
-      margin: 10px 0;
-    }
-
-    .content strong {
-      color: #2a4d6c;
-    }
-
-    /* Prevent row breaks */
-    thead { 
-      display: table-header-group; 
-    }
-
-    tfoot { 
-      display: table-footer-group; 
-    }
-
-    tr {
-      page-break-inside: avoid !important; /* Ensures rows don’t split */
-    }
-
-    @media print {
-      body {
-        padding: 0;
-        margin: 0;
-      }
-
-      table {
-        width: 100%;
-      }
-
-      thead {
-        display: table-header-group !important;
-      }
-
-      tfoot {
-        display: table-footer-group !important;
-      }
-
-      tr {
-        page-break-inside: avoid !important;
-      }
-
-      @page {
-        size: A4 portrait;
-        margin: 10mm;
-      }
-
-      h1 {
-        font-size: 28px;
-      }
-    }
-  </style>
+  <title>HTML to PDF Generator</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 
-  <h1>Purchase Order</h1>
-
-  <div class="content">
-    <p><strong>Vendor:</strong> {Vendor Name}</p>
-    <p><strong>PO Number:</strong> {PO Number}</p>
-    <p><strong>Date:</strong> {Date}</p>
-  </div>
-
-  <table>
-    <thead>
-      <tr>
-        <th>Item</th>
-        <th>Image</th>
-        <th>Quantity</th>
-        <th>Price</th>
-        <th>Barcode</th>
-        <th>Total</th>
-      </tr>
-    </thead>
-    <tbody id="poTableBody"></tbody>
-    <tfoot>
-      <tr>
-        <td colspan="5" style="text-align: right;"><strong>Total:</strong></td>
-        <td>${Total Amount}</td>
-      </tr>
-    </tfoot>
-  </table>
-
-  <div class="footer">
-    <p><strong>Total Amount:</strong> ${Total Amount}</p>
-  </div>
+  <div id="content"></div>
+  <button id="downloadBtn">Download PDF</button>
 
   <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      var tableBody = document.getElementById("poTableBody");
+    // Get the HTML content passed as a URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const htmlContent = urlParams.get('html');
 
-      var items = "{Joined Item Names}".split("|");
-      var images = "{Joined Item Images}".split("|");
-      var quantities = "{Joined Quantities}".split("|");
-      var prices = "{Joined Prices}".split("|");
-      var barcodes = "{Joined Barcodes}".split("|");
-      var totals = "{Joined Totals}".split("|");
+    // Display the HTML content on the page
+    document.getElementById('content').innerHTML = htmlContent;
 
-      for (var i = 0; i < items.length; i++) {
-        var row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${items[i]}</td>
-          <td><img src="${images[i]}" alt="Item Image"></td>
-          <td>${quantities[i]}</td>
-          <td>${prices[i]}</td>
-          <td><img src="${barcodes[i]}" alt="Barcode"></td>
-          <td>${totals[i]}</td>
-        `;
-        tableBody.appendChild(row);
-      }
+    // PDF generation functionality
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      
+      // Use jsPDF to generate PDF from HTML
+      doc.html(document.getElementById('content'), {
+        callback: function (doc) {
+          doc.save('generated.pdf');
+        }
+      });
     });
   </script>
 

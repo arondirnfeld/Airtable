@@ -1,0 +1,27 @@
+name: Download Podcast Episode
+
+on:
+  workflow_dispatch:
+    inputs:
+      episode_url:
+        description: 'URL of the Podcast Episode'
+        required: true
+        default: 'https://content.libsyn.com/p/c/5/b/c5bf5d34ee7249bf/Google_IO_w_Andy_mixdown_v1.mp3?c_id=188891830&response-content-disposition=attachment&cs_id=188891830&response-content-type=audio%2Fmpeg&Expires=1749699561&Signature=YidZavt1XGqFwssaIjxl-BGVKOs4el5jN4tJWnLxm9hrE~BDgxuiAvn~CgAdGGcdeLEulHztMS28DG8ArSkhxCAAx9mOGzpjFFmSKEdJUGvQTVTyU10JgOHedIadh586AjiwokLrmIFwZYrVWWibYRiJ~ymVsFmVij7TbmXHrI-I29tYfubT3CRCfODzJ0tUiBISqSVnvqvqJ00vh1C0Fi2sO~HMWXKALJS88q1AEuW-P4~gkCdqeUavMWPW9JLmLjsluKoaOysSF9eueMG6ayCQcCKT05uE68G4bS3S4ZHBXpCH4oQTl04cE6o9zNq7tpCPn9-fHxosisXPFvxIrg__&Key-Pair-Id=K1YS7LZGUP96OI'
+
+jobs:
+  download_podcast:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Download podcast episode
+        run: |
+          curl -L -o "episode.mp3" "${{ github.event.inputs.episode_url }}"
+      
+      - name: Upload the episode as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: podcast-episode
+          path: episode.mp3

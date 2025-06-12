@@ -21,7 +21,7 @@ jobs:
           curl -L -o "episode.mp3" "${{ github.event.inputs.episode_url }}"
       
       - name: Upload the episode as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@latest
         with:
           name: podcast-episode
           path: episode.mp3

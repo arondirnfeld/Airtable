@@ -19,9 +19,13 @@ jobs:
       - name: Download podcast episode
         run: |
           curl -L -o "episode.mp3" "${{ github.event.inputs.episode_url }}"
-      
-      - name: Upload the episode as artifact
+
+      - name: Zip the episode
+        run: |
+          zip -r podcast-episode.zip episode.mp3
+
+      - name: Upload zipped podcast as artifact
         uses: actions/upload-artifact@v4
         with:
           name: podcast-episode
-          path: episode.mp3
+          path: podcast-episode.zip

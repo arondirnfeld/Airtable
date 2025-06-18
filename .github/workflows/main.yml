@@ -1,36 +1,16 @@
-name: Download Multiple Podcast Episodes
-
-on:
-  workflow_dispatch:
-    inputs:
-      episode_urls:
-        description: 'Enter episode URLs separated by triple pipes: |||'
-        required: true
-        default: 'https://example.com/ep1.mp3|||https://example.com/ep2.mp3'
-
-jobs:
-  download_podcasts:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Create download folder
-        run: mkdir -p downloads
-
-      - name: Download all podcast episodes
+      - name: Parse URLs and Download Each
         run: |
-          echo "${{ github.event.inputs.episode_urls }}" > raw_urls.txt
-          tr '|' '\n' < raw_urls.txt | sed '/^$/d' | sed 'N;N;s/\n//g' > urls.txt
+          mkdir -p downloads
 
-          cat urls.txt | while read -r url; do
-            clean_url=$(echo "$url" | xargs)  # Trim spaces
-            if [[ ! -z "$clean_url" ]]; then
-              filename=$(basename "$clean_url" | cut -d'?' -f1)
-              echo "Downloading: $clean_url"
-              curl -L "$clean_url" -o "downloads/$filename"
-            fi
+          urls="${{ github.event.inputs.episode_urls }}"
+          IFS='|||' read -ra URL_ARRAY <<< "$urls"
+
+          for raw_url in "${URL_ARRAY[@]}"; do
+            url=$(echo "$raw_url" | xargs)
+            [[ -z "$url" ]] && continue
+            filename=$(basename "$url" | cut -d'?' -f1)
+            echo "Downloading: $url"
+            curl -L "$url" -o "downloads/$filename"
           done
 
       - name: Zip all downloaded episodes

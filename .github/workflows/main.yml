@@ -1,7 +1,26 @@
-      - name: Parse URLs and Download Each
-        run: |
-          mkdir -p downloads
+name: Download and Zip Podcast Episodes
 
+on:
+  workflow_dispatch:
+    inputs:
+      episode_urls:
+        description: "Paste URLs separated by |||"
+        required: true
+        default: ""
+
+jobs:
+  download_and_zip:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create download directory
+        run: mkdir -p downloads
+
+      - name: Download each episode
+        run: |
           urls="${{ github.event.inputs.episode_urls }}"
           IFS='|||' read -ra URL_ARRAY <<< "$urls"
 
@@ -16,7 +35,7 @@
       - name: Zip all downloaded episodes
         run: zip -r podcast-episodes.zip downloads/
 
-      - name: Upload zipped podcasts as artifact
+      - name: Upload zipped episodes as artifact
         uses: actions/upload-artifact@v4
         with:
           name: podcast-episodes

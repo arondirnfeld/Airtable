@@ -1,31 +1,41 @@
-name: Download Podcast Episode
+name: Download Multiple Podcast Episodes
 
 on:
   workflow_dispatch:
     inputs:
-      episode_url:
-        description: 'URL of the Podcast Episode'
+      episode_urls:
+        description: 'Paste episode URLs (one per line)'
         required: true
-        default: 'https://traffic.libsyn.com/secure/meaningfulpeoplepodcast/Shoff_1_june_chicago_final.mp3?dest-id=1900811'
+        default: |
+          https://example.com/episode1.mp3
+          https://example.com/episode2.mp3
 
 jobs:
-  download_podcast:
+  download_podcasts:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Download podcast episode
-        run: |
-          curl -L -o "episode.mp3" "${{ github.event.inputs.episode_url }}"
+      - name: Create download folder
+        run: mkdir -p downloads
 
-      - name: Zip the episode
+      - name: Download all podcast episodes
         run: |
-          zip -r podcast-episode.zip episode.mp3
+          echo "${{ github.event.inputs.episode_urls }}" | while read -r url; do
+            if [[ ! -z "$url" ]]; then
+              filename=$(basename "$url" | cut -d'?' -f1)
+              echo "Downloading: $url"
+              curl -L "$url" -o "downloads/$filename"
+            fi
+          done
 
-      - name: Upload zipped podcast as artifact
+      - name: Zip all downloaded episodes
+        run: zip -r podcast-episodes.zip downloads/
+
+      - name: Upload zipped podcasts as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: podcast-episode
-          path: podcast-episode.zip
+          name: podcast-episodes
+          path: podcast-episodes.zip

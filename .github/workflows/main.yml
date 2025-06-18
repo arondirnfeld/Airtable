@@ -4,11 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       episode_urls:
-        description: 'Paste episode URLs (one per line)'
+        description: 'Enter episode URLs separated by commas or ||'
         required: true
-        default: |
-          https://example.com/episode1.mp3
-          https://example.com/episode2.mp3
+        default: 'https://example.com/ep1.mp3, https://example.com/ep2.mp3'
 
 jobs:
   download_podcasts:
@@ -23,11 +21,13 @@ jobs:
 
       - name: Download all podcast episodes
         run: |
-          echo "${{ github.event.inputs.episode_urls }}" | while read -r url; do
-            if [[ ! -z "$url" ]]; then
-              filename=$(basename "$url" | cut -d'?' -f1)
-              echo "Downloading: $url"
-              curl -L "$url" -o "downloads/$filename"
+          IFS=',||' read -ra URLS <<< "${{ github.event.inputs.episode_urls }}"
+          for url in "${URLS[@]}"; do
+            clean_url=$(echo "$url" | xargs)  # Trim spaces
+            if [[ ! -z "$clean_url" ]]; then
+              filename=$(basename "$clean_url" | cut -d'?' -f1)
+              echo "Downloading: $clean_url"
+              curl -L "$clean_url" -o "downloads/$filename"
             fi
           done
 

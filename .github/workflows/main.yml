@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       episode_urls:
-        description: 'Enter episode URLs separated by commas or ||'
+        description: 'Enter episode URLs separated by triple pipes: |||'
         required: true
-        default: 'https://example.com/ep1.mp3, https://example.com/ep2.mp3'
+        default: 'https://example.com/ep1.mp3|||https://example.com/ep2.mp3'
 
 jobs:
   download_podcasts:
@@ -21,8 +21,10 @@ jobs:
 
       - name: Download all podcast episodes
         run: |
-          IFS=',||' read -ra URLS <<< "${{ github.event.inputs.episode_urls }}"
-          for url in "${URLS[@]}"; do
+          echo "${{ github.event.inputs.episode_urls }}" > raw_urls.txt
+          tr '|' '\n' < raw_urls.txt | sed '/^$/d' | sed 'N;N;s/\n//g' > urls.txt
+
+          cat urls.txt | while read -r url; do
             clean_url=$(echo "$url" | xargs)  # Trim spaces
             if [[ ! -z "$clean_url" ]]; then
               filename=$(basename "$clean_url" | cut -d'?' -f1)

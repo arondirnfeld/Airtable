@@ -1,0 +1,9 @@
+name: Download Filetest
+
+on: [push]
+
+jobs:
+  download:
+    runs-on: ubuntu-latest
+    steps:
+      - run: curl -L -o downloaded_file.txt https://example.com/path/to/file.txt

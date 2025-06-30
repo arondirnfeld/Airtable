@@ -1,0 +1,25 @@
+name: Download test File and Save as Artifact
+
+on:
+  workflow_dispatch:
+    inputs:
+      file_url:
+        description: 'URL of the file to download'
+        required: true
+        type: string
+
+jobs:
+  download-and-save:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download file using curl
+        run: |
+          curl -L -O "$FILE_URL"
+        env:
+          FILE_URL: ${{ github.event.inputs.file_url }}
+
+      - name: Upload all downloaded files as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: downloaded-files
+          path: .  # uploads all files in current directory
